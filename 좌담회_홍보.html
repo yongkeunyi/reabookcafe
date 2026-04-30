@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>주역으로 읽는 여가시대 — 좌담회 2026.5.9</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;700;900&family=Noto+Sans+KR:wght@300;400;500;700&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ── CSS 변수 ── */
+:root {
+  --ink:       #1a1208;
+  --ink-light: #3d2e18;
+  --gold:      #c8963a;
+  --gold-lt:   #e8c57a;
+  --red:       #9b2335;
+  --sand:      #f5edd8;
+  --paper:     #faf6ec;
+  --paper2:    #f0e8d0;
+  --teal:      #2a5f5a;
+  --teal-lt:   #3d8a82;
+  --muted:     #6b5a3e;
+  --rule:      rgba(200,150,58,0.3);
+  --white:     #ffffff;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Noto Serif KR', serif;
+  background: var(--paper);
+  color: var(--ink);
+  overflow-x: hidden;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+/* ── 배경 패턴 (한지 느낌) ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: -2;
+  background:
+    radial-gradient(ellipse at 20% 10%, rgba(200,150,58,0.06) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 90%, rgba(42,95,90,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 60% 40%, rgba(155,35,53,0.03) 0%, transparent 45%);
+}
+
+/* 한지 노이즈 텍스처 */
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: -1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+}
+
+/* ── 애니메이션 ── */
+@keyframes fadeUp   { from { opacity:0; transform: translateY(28px); } to { opacity:1; transform: translateY(0); } }
+@keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
+@keyframes brushIn  { from { opacity:0; transform: scaleX(0); transform-origin: left; } to { opacity:1; transform: scaleX(1); } }
+@keyframes floatY   { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+@keyframes inkDrop  { 0% { opacity:0; transform: scale(0.4) rotate(-10deg); } 60% { transform: scale(1.08) rotate(2deg); } 100% { opacity:1; transform: scale(1) rotate(0deg); } }
+@keyframes shimmer  { 0%,100% { opacity:0.7; } 50% { opacity:1; } }
+
+/* ── 상단 장식 띠 ── */
+.deco-top {
+  height: 6px;
+  background: linear-gradient(90deg, var(--red), var(--gold), var(--teal), var(--gold), var(--red));
+}
+
+/* ── 히어로 ── */
+.hero {
+  position: relative;
+  padding: 80px 24px 72px;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* 배경 괘 기호 장식 */
+.hero-bg-gua {
+  position: absolute;
+  font-size: 200px;
+  opacity: 0.04;
+  font-family: serif;
+  line-height: 1;
+  pointer-events: none;
+  animation: floatY 8s ease-in-out infinite;
+  color: var(--ink);
+}
+.hero-bg-gua.left  { top: -20px; left: -30px; animation-delay: 0s; }
+.hero-bg-gua.right { top: 10px;  right: -30px; animation-delay: 4s; }
+
+/* 상단 날짜 배지 */
+.date-badge {
+  display: inline-flex;
+  align-items: center; gap: 10px;
+  background: var(--red);
+  color: #fff;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 13px; font-weight: 700; letter-spacing: 2px;
+  padding: 8px 22px; border-radius: 30px;
+  margin-bottom: 28px;
+  animation: fadeIn 0.8s ease both;
+  box-shadow: 0 4px 16px rgba(155,35,53,0.3);
+}
+.date-badge::before { content: '🗓'; font-size: 14px; }
+
+/* 주 제목 — 한자 스타일 */
+.hero-kua-title {
+  font-size: clamp(13px, 3vw, 18px);
+  letter-spacing: 4px;
+  color: var(--muted);
+  margin-bottom: 10px;
+  animation: fadeUp 0.9s 0.2s ease both;
+  font-weight: 300;
+}
+
+.hero-main-title {
+  font-size: clamp(36px, 8vw, 72px);
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: 18px;
+  animation: inkDrop 1.1s 0.3s ease both;
+  letter-spacing: -1px;
+}
+
+.hero-main-title .accent {
+  color: var(--gold);
+  display: inline-block;
+}
+
+.hero-sub-title {
+  font-size: clamp(16px, 3.5vw, 24px);
+  font-weight: 400;
+  color: var(--ink-light);
+  margin-bottom: 32px;
+  animation: fadeUp 1s 0.5s ease both;
+  line-height: 1.6;
+}
+
+/* 금선 장식 */
+.gold-divider {
+  width: 120px; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 0 auto 32px;
+  animation: brushIn 1s 0.8s ease both;
+}
+
+/* 주제 태그들 */
+.theme-tags {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;
+  margin-bottom: 40px;
+  animation: fadeUp 1s 0.9s ease both;
+}
+.theme-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--paper2);
+  border: 1px solid var(--rule);
+  border-radius: 30px;
+  padding: 7px 18px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 13px; font-weight: 500;
+  color: var(--ink-light);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+/* ── 정보 카드 그리드 ── */
+.info-section {
+  max-width: 880px; margin: 0 auto 64px;
+  padding: 0 24px;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+  animation: fadeUp 1s 1s ease both;
+}
+
+.info-card {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 16px;
+  padding: 22px 24px;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  transition: transform .25s, box-shadow .25s;
+  position: relative; overflow: hidden;
+}
+.info-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+}
+.info-card.ic-red::before   { background: var(--red); }
+.info-card.ic-gold::before  { background: var(--gold); }
+.info-card.ic-teal::before  { background: var(--teal); }
+.info-card.ic-ink::before   { background: var(--ink); }
+
+.info-card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(0,0,0,0.1); }
+.info-card-icon  { font-size: 28px; margin-bottom: 10px; }
+.info-card-label {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 6px;
+}
+.info-card-value {
+  font-size: 16px; font-weight: 700; color: var(--ink); line-height: 1.5;
+}
+.info-card-sub {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 12px; color: var(--muted); margin-top: 4px;
+}
+
+/* ── 괘 섹션 ── */
+.gua-section {
+  max-width: 880px; margin: 0 auto 64px;
+  padding: 0 24px;
+}
+
+.section-eyebrow {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 8px;
+  text-align: center;
+}
+.section-title {
+  font-size: clamp(22px, 5vw, 32px);
+  font-weight: 700; text-align: center;
+  margin-bottom: 32px; color: var(--ink);
+}
+
+.gua-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.gua-card {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 20px;
+  padding: 32px 28px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 6px 28px rgba(0,0,0,0.07);
+  transition: transform .3s, box-shadow .3s;
+}
+.gua-card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px rgba(0,0,0,0.12); }
+
+/* 괘 상징 배경 */
+.gua-card::after {
+  content: attr(data-symbol);
+  position: absolute;
+  bottom: -10px; right: 10px;
+  font-size: 90px;
+  opacity: 0.06;
+  line-height: 1;
+  font-family: serif;
+  pointer-events: none;
+  color: var(--ink);
+}
+
+.gua-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  border-radius: 20px; padding: 5px 14px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 12px; font-weight: 700; letter-spacing: 1px;
+  margin-bottom: 16px;
+}
+.gua-badge.red  { background: rgba(155,35,53,0.1);  color: var(--red); }
+.gua-badge.teal { background: rgba(42,95,90,0.1);   color: var(--teal); }
+
+.gua-hanja {
+  font-size: 52px; font-weight: 900; line-height: 1;
+  margin-bottom: 6px;
+  letter-spacing: -2px;
+}
+.gua-hanja.red-txt  { color: var(--red); }
+.gua-hanja.teal-txt { color: var(--teal); }
+
+.gua-korean {
+  font-size: 18px; font-weight: 700; color: var(--ink-light);
+  margin-bottom: 12px;
+}
+
+.gua-lines {
+  display: flex; gap: 3px; margin-bottom: 16px;
+}
+.gua-line {
+  height: 10px; border-radius: 3px;
+  background: currentColor; opacity: 0.5;
+  transition: opacity .2s;
+}
+.gua-line.solid { flex: 1; }
+.gua-line.broken { flex: 0.4; }
+.gua-line.broken + .gua-line.broken { margin-left: 4px; }
+
+.gua-row {
+  display: flex; gap: 6px; margin-bottom: 5px; align-items: center;
+}
+
+.gua-desc {
+  font-size: 15px; color: var(--muted);
+  line-height: 1.85;
+  border-left: 3px solid var(--rule);
+  padding-left: 14px;
+}
+.gua-quote {
+  font-size: 14px; font-style: italic;
+  color: var(--gold); margin-top: 10px;
+  font-weight: 500;
+}
+
+/* 괘 라인 시각화 */
+.yao-lines { margin-bottom: 16px; }
+.yao-row   { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.yao-num   { font-family: 'Noto Sans KR', sans-serif; font-size: 10px; color: var(--muted); width: 16px; }
+.yao-yang  { height: 10px; border-radius: 3px; flex: 1; }
+.yao-yin   { display: flex; gap: 8px; flex: 1; }
+.yao-yin span { height: 10px; border-radius: 3px; flex: 1; }
+
+/* ── 연사 섹션 ── */
+.speakers-section {
+  background: var(--ink);
+  color: #fff;
+  padding: 72px 24px;
+  margin-bottom: 0;
+  position: relative;
+  overflow: hidden;
+}
+.speakers-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 15% 50%, rgba(200,150,58,0.12) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 30%, rgba(42,95,90,0.15) 0%, transparent 50%);
+}
+
+.speakers-inner {
+  max-width: 880px; margin: 0 auto;
+  position: relative;
+}
+
+.speaker-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 40px;
+}
+
+.speaker-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(200,150,58,0.25);
+  border-radius: 20px;
+  padding: 32px 28px;
+  text-align: center;
+  backdrop-filter: blur(4px);
+  transition: background .3s, border-color .3s;
+  position: relative; overflow: hidden;
+}
+.speaker-card:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(200,150,58,0.5);
+}
+.speaker-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+.speaker-avatar {
+  width: 90px; height: 90px; border-radius: 50%;
+  background: rgba(200,150,58,0.15);
+  border: 2px solid rgba(200,150,58,0.4);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 38px; margin: 0 auto 18px;
+}
+.speaker-role {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--gold-lt); margin-bottom: 6px;
+}
+.speaker-name {
+  font-size: 22px; font-weight: 700; color: #fff;
+  margin-bottom: 8px;
+}
+.speaker-affil {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 13px; color: rgba(255,255,255,0.6); line-height: 1.6;
+  margin-bottom: 14px;
+}
+.speaker-tag {
+  display: inline-block;
+  background: rgba(200,150,58,0.15); border: 1px solid rgba(200,150,58,0.35);
+  color: var(--gold-lt); border-radius: 20px;
+  padding: 4px 12px; font-size: 12px;
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+/* ── 주제 심화 섹션 ── */
+.topic-section {
+  max-width: 880px; margin: 0 auto;
+  padding: 72px 24px 64px;
+}
+
+.topic-card {
+  background: var(--white);
+  border: 1px solid var(--rule);
+  border-radius: 20px;
+  padding: 36px 36px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  display: flex; gap: 24px; align-items: flex-start;
+}
+.topic-icon {
+  font-size: 36px; flex-shrink: 0;
+  width: 64px; height: 64px; border-radius: 16px;
+  background: var(--sand);
+  display: flex; align-items: center; justify-content: center;
+}
+.topic-num {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 11px; letter-spacing: 2px; color: var(--gold); margin-bottom: 6px;
+}
+.topic-title { font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+.topic-body  { font-size: 15px; color: var(--muted); line-height: 1.85; }
+
+/* ── 참가 방법 섹션 ── */
+.join-section {
+  background: linear-gradient(135deg, var(--teal) 0%, #1a3f3b 100%);
+  color: #fff;
+  padding: 72px 24px;
+  text-align: center;
+}
+.join-inner { max-width: 720px; margin: 0 auto; }
+
+.join-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 40px;
+}
+
+.join-card {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px;
+  padding: 32px 24px;
+  text-align: center;
+  backdrop-filter: blur(4px);
+  transition: background .3s;
+}
+.join-card:hover { background: rgba(255,255,255,0.15); }
+.join-card-icon { font-size: 40px; margin-bottom: 14px; }
+.join-card-type {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: rgba(255,255,255,0.65); margin-bottom: 8px;
+}
+.join-card-title { font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+.join-card-desc {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.75; margin-bottom: 18px;
+}
+
+/* Zoom 링크 버튼 */
+.zoom-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #2196F3; color: #fff;
+  border: none; border-radius: 12px;
+  padding: 12px 22px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 15px; font-weight: 700;
+  text-decoration: none; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(33,150,243,0.4);
+  transition: all .25s;
+  word-break: break-all;
+}
+.zoom-btn:hover { background: #1976D2; transform: translateY(-2px); }
+
+.zoom-id {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 13px; color: rgba(255,255,255,0.65);
+  margin-top: 8px;
+}
+
+/* 오프라인 주소 */
+.offline-addr {
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 14px; color: rgba(255,255,255,0.85); line-height: 1.8;
+  background: rgba(255,255,255,0.08);
+  border-radius: 10px; padding: 12px 16px;
+  margin-top: 4px; text-align: left;
+}
+
+/* ── 하단 푸터 ── */
+.footer {
+  background: var(--ink);
+  color: rgba(255,255,255,0.5);
+  text-align: center;
+  padding: 40px 24px;
+  font-family: 'Noto Sans KR', sans-serif;
+  font-size: 13px; line-height: 1.8;
+}
+.footer strong { color: rgba(255,255,255,0.85); }
+
+/* ── 반응형 ── */
+@media (max-width: 640px) {
+  .hero { padding: 60px 20px 56px; }
+  .gua-grid    { grid-template-columns: 1fr; }
+  .speaker-grid{ grid-template-columns: 1fr; }
+  .join-grid   { grid-template-columns: 1fr; }
+  .topic-card  { flex-direction: column; gap: 16px; }
+  .info-grid   { grid-template-columns: 1fr 1fr; }
+  .hero-bg-gua { display: none; }
+}
+@media (max-width: 400px) {
+  .info-grid { grid-template-columns: 1fr; }
+}
+
+/* 스크롤 reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+</style>
+</head>
+<body>
+
+<!-- 상단 컬러 띠 -->
+<div class="deco-top"></div>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <!-- 배경 괘 심볼 -->
+  <div class="hero-bg-gua left">旅</div>
+  <div class="hero-bg-gua right">觀</div>
+
+  <div class="date-badge">2026년 5월 9일 (토) · 오후 3:00</div>
+
+  <div class="hero-kua-title">주역(周易)으로 읽는 여가시대</div>
+
+  <div class="hero-main-title">
+    <span class="accent">旅</span>와 <span class="accent">觀</span><br>
+    그리고 남겨진 시간
+  </div>
+
+  <div class="hero-sub-title">
+    화산려괘(火山旅卦) · 풍지관괘(風地觀卦)<br>
+    노동의 종말, 여가시대의 도래 — 어떻게 살 것인가
+  </div>
+
+  <div class="gold-divider"></div>
+
+  <div class="theme-tags">
+    <span class="theme-tag">☯ 주역 (周易)</span>
+    <span class="theme-tag">🔥 화산려괘</span>
+    <span class="theme-tag">🌿 풍지관괘</span>
+    <span class="theme-tag">🤖 노동의 종말</span>
+    <span class="theme-tag">🌅 여가시대</span>
+    <span class="theme-tag">✈️ 치유관광</span>
+  </div>
+</section>
+
+<!-- ══ 행사 정보 ══ -->
+<section class="info-section reveal">
+  <div class="info-grid">
+    <div class="info-card ic-red">
+      <div class="info-card-icon">📅</div>
+      <div class="info-card-label">일시</div>
+      <div class="info-card-value">2026년 5월 9일<br>(토요일)</div>
+      <div class="info-card-sub">오후 3:00 시작</div>
+    </div>
+    <div class="info-card ic-gold">
+      <div class="info-card-icon">☕</div>
+      <div class="info-card-label">장소</div>
+      <div class="info-card-value">레아 북카페</div>
+      <div class="info-card-sub">대전 유성구 학하서로20번길 6-22</div>
+    </div>
+    <div class="info-card ic-teal">
+      <div class="info-card-icon">💬</div>
+      <div class="info-card-label">형식</div>
+      <div class="info-card-value">소규모 좌담회</div>
+      <div class="info-card-sub">오프라인 + 줌(Zoom) 동시 진행</div>
+    </div>
+    <div class="info-card ic-ink">
+      <div class="info-card-icon">🆓</div>
+      <div class="info-card-label">참가</div>
+      <div class="info-card-value">무료 / 누구나</div>
+      <div class="info-card-sub">사전 신청 불필요</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 두 괘(卦) 소개 ══ -->
+<section class="gua-section reveal">
+  <div class="section-eyebrow">오늘의 두 괘 / Two Hexagrams</div>
+  <div class="section-title">화산려(火山旅) · 풍지관(風地觀)</div>
+
+  <div class="gua-grid">
+    <!-- 화산려괘 -->
+    <div class="gua-card" data-symbol="旅">
+      <div class="gua-badge red">🔥 제56괘</div>
+      <div class="gua-hanja red-txt">火山旅</div>
+      <div class="gua-korean">화산려괘 — 여행(旅行)의 괘</div>
+
+      <!-- 효 시각화 (火山旅: 상괘 離, 하괘 艮) -->
+      <div class="yao-lines">
+        <div class="yao-row"><span class="yao-num">上</span>
+          <div class="yao-yang" style="background:var(--red);opacity:0.5;height:10px;border-radius:3px;"></div>
+        </div>
+        <div class="yao-row"><span class="yao-num">五</span>
+          <div class="yao-yin" style="color:var(--red)"><span style="background:var(--red);opacity:0.5;"></span><span style="background:var(--red);opacity:0.5;"></span></div>
+        </div>
+        <div class="yao-row"><span class="yao-num">四</span>
+          <div class="yao-yang" style="background:var(--red);opacity:0.5;height:10px;border-radius:3px;"></div>
+        </div>
+        <div class="yao-row"><span class="yao-num">三</span>
+          <div class="yao-yang" style="background:var(--red);opacity:0.35;height:10px;border-radius:3px;"></div>
+        </div>
+        <div class="yao-row"><span class="yao-num">二</span>
+          <div class="yao-yang" style="background:var(--red);opacity:0.35;height:10px;border-radius:3px;"></div>
+        </div>
+        <div class="yao-row"><span class="yao-num">初</span>
+          <div class="yao-yin"><span style="background:var(--red);opacity:0.35;"></span><span style="background:var(--red);opacity:0.35;"></span></div>
+        </div>
+      </div>
+
+      <div class="gua-desc">
+        여(旅)는 나그네, 이방인, 떠남을 의미합니다. 불(火)이 산(山) 위에서 타오르듯, 머물지 못하고 끊임없이 이동하는 존재의 상입니다. 고향을 떠나 낯선 곳에서 자신을 발견하는 여정 — 이것이 여행의 본질입니다.
+      </div>
+      <div class="gua-quote">
+        "旅, 小亨, 旅貞吉" — 나그네의 길, 작은 것에 형통하며 바름으로 길하다
+      </div>
+    </div>
+
+    <!-- 풍지관괘 -->
+    <div class="gua-card" data-symbol="觀">
+      <div class="gua-badge teal">🌿 제20괘</div>
+      <div class="gua-hanja teal-txt">風地觀</div>
+      <div class="gua-korean">풍지관괘 — 관광(觀光)의 괘</div>
+
+      <!-- 효 시각화 (風地觀: 상괘 巽, 하괘 坤) -->
+      <div class="yao-lines">
+        <div class="yao-row"><span class="yao-num">上</span>
+          <div class="yao-yang" style="background:var(--teal);opacity:0.5;height:10px;border-radius:3px;"></div>
+        </div>
+        <div class="yao-row"><span class="yao-num">五</span>
+          <div class="yao-yang" style="background:var(--teal);opacity:0.5;height:10px;border-radius:3px;"></div>
+        </div>
+        <div class="yao-row"><span class="yao-num">四</span>
+          <div class="yao-yin"><span style="background:var(--teal);opacity:0.5;"></span><span style="background:var(--teal);opacity:0.5;"></span></div>
+        </div>
+        <div class="yao-row"><span class="yao-num">三</span>
+          <div class="yao-yin"><span style="background:var(--teal);opacity:0.35;"></span><span style="background:var(--teal);opacity:0.35;"></span></div>
+        </div>
+        <div class="yao-row"><span class="yao-num">二</span>
+          <div class="yao-yin"><span style="background:var(--teal);opacity:0.35;"></span><span style="background:var(--teal);opacity:0.35;"></span></div>
+        </div>
+        <div class="yao-row"><span class="yao-num">初</span>
+          <div class="yao-yin"><span style="background:var(--teal);opacity:0.35;"></span><span style="background:var(--teal);opacity:0.35;"></span></div>
+        </div>
+      </div>
+
+      <div class="gua-desc">
+        관(觀)은 봄, 통찰, 세상을 넓게 바라봄을 뜻합니다. 바람(風)이 땅(地) 위를 두루 훑듯, 관광(觀光)의 본의는 단순한 구경이 아니라 다른 세계의 빛(光)을 보며 자신을 새롭게 하는 것입니다.
+      </div>
+      <div class="gua-quote">
+        "觀, 盥而不薦, 有孚顒若" — 정성껏 씻되 서두르지 않으니, 믿음으로 우러러 받든다
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 연사 소개 ══ -->
+<section class="speakers-section">
+  <div class="speakers-inner">
+    <div class="section-eyebrow" style="color:var(--gold-lt);">오늘의 대담자 / Speakers</div>
+    <div class="section-title" style="color:#fff;">두 분의 깊은 대화</div>
+
+    <div class="speaker-grid">
+      <div class="speaker-card">
+        <div class="speaker-avatar">🎓</div>
+        <div class="speaker-role">학자 / 주임교수</div>
+        <div class="speaker-name">이용근 교수</div>
+        <div class="speaker-affil">
+          국립공주대학교<br>
+          스마트의료웰니스관광 대학원<br>
+          주임교수
+        </div>
+        <span class="speaker-tag">치유관광 · 웰니스 · 주역 연구</span>
+      </div>
+
+      <div class="speaker-card">
+        <div class="speaker-avatar">🙏</div>
+        <div class="speaker-role">불교 / 수행자</div>
+        <div class="speaker-name">태원 스님</div>
+        <div class="speaker-affil">
+          법천사<br>
+          불교 수행자 · 명상 지도자
+        </div>
+        <span class="speaker-tag">선(禪) · 수행 · 동양철학</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 좌담 주제 ══ -->
+<section class="topic-section reveal">
+  <div class="section-eyebrow">좌담 주제 / Discussion Topics</div>
+  <div class="section-title">우리는 무엇을 이야기하는가</div>
+
+  <div class="topic-card">
+    <div class="topic-icon">🤖</div>
+    <div>
+      <div class="topic-num">TOPIC 01</div>
+      <div class="topic-title">노동의 종말과 잉여 시간의 도래</div>
+      <div class="topic-body">
+        AI와 자동화가 가져올 노동의 종말(The End of Work). 인류가 처음 맞이하는 본격적인 여가시대에, 남겨진 방대한 시간을 우리는 어떻게 채울 것인가? 주역은 이 거대한 전환에 무엇을 말하는가.
+      </div>
+    </div>
+  </div>
+
+  <div class="topic-card">
+    <div class="topic-icon">🔥</div>
+    <div>
+      <div class="topic-num">TOPIC 02</div>
+      <div class="topic-title">화산려괘(火山旅卦) — 여행이란 무엇인가</div>
+      <div class="topic-body">
+        나그네(旅)는 왜 떠나는가. 불이 산 위에서 타오르는 상처럼, 안정된 거처 없이 이동하는 존재의 근원적 의미. 현대의 치유관광과 여행이 주역의 려괘에서 발견하는 지혜는 무엇인가.
+      </div>
+    </div>
+  </div>
+
+  <div class="topic-card">
+    <div class="topic-icon">🌿</div>
+    <div>
+      <div class="topic-num">TOPIC 03</div>
+      <div class="topic-title">풍지관괘(風地觀卦) — 관광의 철학적 의미</div>
+      <div class="topic-body">
+        관광(觀光)의 한자 그대로, '세상의 빛을 본다'. 바람이 온 땅 위를 훑듯 세상을 두루 바라보는 행위. 단순한 유람이 아닌 자기 성찰과 세계 이해의 여정으로서의 관광을 불교적 관점과 함께 탐색한다.
+      </div>
+    </div>
+  </div>
+
+  <div class="topic-card">
+    <div class="topic-icon">⏳</div>
+    <div>
+      <div class="topic-num">TOPIC 04</div>
+      <div class="topic-title">잉여 시간, 어떻게 쓸 것인가</div>
+      <div class="topic-body">
+        일하지 않아도 되는 시대가 온다면 — 무위(無爲)의 지혜, 선(禪)의 일상, 치유 여행의 가치. 동양 철학이 제시하는 '좋은 삶'과 '좋은 여가'의 길을 두 전문가의 시각으로 자유롭게 이야기한다.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 참가 방법 ══ -->
+<section class="join-section">
+  <div class="join-inner">
+    <div class="section-eyebrow" style="color:rgba(255,255,255,0.6);">참가 방법 / How to Join</div>
+    <div class="section-title" style="color:#fff; margin-bottom:8px;">함께하는 방법은 두 가지</div>
+    <p style="font-family:'Noto Sans KR',sans-serif; font-size:15px; color:rgba(255,255,255,0.7); margin-bottom:0;">현장에서 직접, 혹은 온라인으로 — 어디서든 함께하세요</p>
+
+    <div class="join-grid">
+      <!-- 오프라인 -->
+      <div class="join-card">
+        <div class="join-card-icon">🏡</div>
+        <div class="join-card-type">오프라인 참가</div>
+        <div class="join-card-title">현장 직접 참여</div>
+        <div class="join-card-desc">
+          카페에서 직접 만나<br>
+          따뜻한 차 한 잔과 함께<br>
+          깊은 대화를 나눕니다
+        </div>
+        <div class="offline-addr">
+          📍 <strong>레아 북카페</strong><br>
+          대전광역시 유성구<br>
+          학하서로 20번길 6-22<br>
+          (대전대학교 정문 옆)
+        </div>
+      </div>
+
+      <!-- 온라인 Zoom -->
+      <div class="join-card">
+        <div class="join-card-icon">💻</div>
+        <div class="join-card-type">온라인 참가 (Zoom)</div>
+        <div class="join-card-title">줌으로 함께</div>
+        <div class="join-card-desc">
+          어디서든 접속하여<br>
+          실시간으로 좌담에<br>
+          참여할 수 있습니다
+        </div>
+        <a class="zoom-btn" href="https://kongju.zoom.us/j/7145015544" target="_blank" rel="noopener">
+          📹 Zoom 입장하기
+        </a>
+        <div class="zoom-id">
+          🔗 https://kongju.zoom.us/j/7145015544<br>
+          회의 ID: 714 501 5544
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 푸터 ══ -->
+<footer class="footer">
+  <div style="font-size:24px; margin-bottom:12px;">☯</div>
+  <div>
+    <strong>주역으로 읽는 여가시대 좌담회</strong><br>
+    2026년 5월 9일(토) 오후 3:00 · 레아 북카페, 대전 유성구<br>
+    <br>
+    주관: 국립공주대학교 스마트의료웰니스관광 대학원<br>
+    문의: 이용근 주임교수 연구실<br>
+    <br>
+    <span style="font-size:12px; opacity:0.5;">오프라인 참가는 별도 신청 없이 자유롭게 방문하시면 됩니다</span>
+  </div>
+</footer>
+
+<script>
+// 스크롤 reveal
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// 괘 카드 호버 — 효 색상 강조
+document.querySelectorAll('.gua-card').forEach(card => {
+  card.addEventListener('mouseenter', () => {
+    card.querySelectorAll('.yao-yang, .yao-yin span').forEach(el => {
+      el.style.opacity = '0.85';
+      el.style.transition = 'opacity .3s';
+    });
+  });
+  card.addEventListener('mouseleave', () => {
+    card.querySelectorAll('.yao-yang, .yao-yin span').forEach((el, i) => {
+      el.style.opacity = i < 3 ? '0.5' : '0.35';
+    });
+  });
+});
+</script>
+
+</body>
+</html>
